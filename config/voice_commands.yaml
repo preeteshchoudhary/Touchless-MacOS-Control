@@ -1,0 +1,6 @@
+volume up: volume_up
+volume down: volume_down
+mute: mute_volume
+select text: select_text
+show desktop: show_desktop
+lock screen: lock_screen

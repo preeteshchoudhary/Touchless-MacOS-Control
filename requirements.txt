@@ -1,0 +1,7 @@
+opencv-python
+mediapipe
+PyYAML
+speechrecognition
+pyaudio
+pyAudioAnalysis
+pyobjc
