@@ -36,13 +36,16 @@ class MainController:
             self.stop()
 
     def _gesture_worker(self):
+        """Background thread for gesture detection"""
         while self.running:
             gesture = self.gesture_detector.get_gesture()
             if gesture:
                 self.gesture_queue.put(gesture)
-            time.sleep(0.1)
+                time.sleep(2)  # 2-second cooldown after detection
+            time.sleep(0.1)  # Reduced polling frequency
 
     def _video_preview_worker(self):
+        """Main thread for video display"""
         cv2.namedWindow('Gesture Detection')
         while self.running:
             try:
@@ -60,6 +63,7 @@ class MainController:
         cv2.destroyAllWindows()
 
     def _process_gestures(self):
+        """Process detected gestures"""
         while not self.gesture_queue.empty():
             gesture = self.gesture_queue.get()
             action = self.gesture_mapper.map_gesture(gesture)
@@ -68,6 +72,7 @@ class MainController:
                 print(f"Gesture: {gesture} → {action}")
 
     def _process_voice(self):
+        """Process voice commands"""
         command = self.voice_listener.listen()
         if command:
             action = self.voice_mapper.map_gesture(command)
@@ -76,6 +81,7 @@ class MainController:
                 print(f"Voice: {command} → {action}")
 
     def stop(self):
+        """Cleanup resources"""
         self.running = False
         self.voice_listener.stop()
         self.gesture_detector.stop()

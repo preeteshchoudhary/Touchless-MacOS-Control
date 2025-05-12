@@ -26,6 +26,7 @@ class GestureDetector:
             
         # State management
         self.latest_gesture = None
+        self.prev_gesture = None  # Track previous gesture
         self.latest_frame = None
         self.timestamp = 0
         self.lock = threading.Lock()
@@ -64,9 +65,14 @@ class GestureDetector:
                 print(f"Processing error: {e}")
 
     def get_gesture(self):
-        """Thread-safe way to get latest gesture"""
+        """Thread-safe way to get latest gesture (resets after retrieval)"""
         with self.lock:
-            return self.latest_gesture
+            current_gesture = self.latest_gesture
+            if current_gesture != self.prev_gesture:
+                self.prev_gesture = current_gesture
+                self.latest_gesture = None  # Reset after retrieval
+                return current_gesture
+            return None
 
     def get_frame(self):
         """Get latest frame for preview"""
